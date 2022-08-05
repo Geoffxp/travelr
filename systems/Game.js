@@ -25,7 +25,7 @@ export default class Game {
     }
     addPattern() {
         if (this.patTimer <= 0) {
-            this.patterns.push(new Pattern(this.width, this.height * 0.72))
+            this.patterns.push(new Pattern(this.width, this.height * 0.72, this))
             this.patTimer = this.roadWidth
         }
         this.patterns.filter(pat => pat.offScreen === false)

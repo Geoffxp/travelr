@@ -1,8 +1,8 @@
 import Player from "./players/Player.js";
 import Game from "./systems/Game.js";
 
-const GAME_WIDTH = window.innerWidth
-const GAME_HEIGHT = window.innerHeight
+const GAME_WIDTH = 1280
+const GAME_HEIGHT = 720
 const game = new Game(GAME_WIDTH, GAME_HEIGHT)
 
 const canvas = document.createElement("canvas")
@@ -25,10 +25,13 @@ if (getMobileOS() == "iOS") document.querySelector(".fullscreen").style.display 
 document.querySelector(".fullscreen").addEventListener("click", () => {
     if (canvas.requestFullscreen) {
         canvas.requestFullscreen();
+        screen.orientation.lock("landscape");
     } else if (canvas.webkitRequestFullscreen) { /* Safari */
         canvas.webkitRequestFullscreen();
+        screen.orientation.lock("portrait");
     } else if (elem.msRequestFullscreen) { /* IE11 */
         canvas.msRequestFullscreen();
+        screen.orientation.lock("portrait");
     }
 })
 game.addPlayer(new Player(game.width / 3, game.height * 0.85,90, game))
@@ -42,9 +45,9 @@ const gameloop = () => {
     now = Date.now();
     elapsed = now - then;
     if (elapsed >= frameRate) {
-        then = now
+        then = now - (elapsed % frameRate)
         elapsed = 0
-        game.update(window.innerWidth, window.innerHeight, canvas)
+        game.update(GAME_WIDTH, GAME_HEIGHT, canvas)
         game.draw(ctx)
     }
     requestAnimationFrame(gameloop)

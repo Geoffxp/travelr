@@ -2,7 +2,7 @@ export default class Obstacle {
     constructor(game) {
         this.shape = "triangle"
         this.size = 40
-        this.x = window.innerWidth + 50
+        this.x = game.width + 50
         this.y = game.height * 0.85 + (game.players[0].size)
         this.rate = 7
         this.passed = false
@@ -31,7 +31,7 @@ export default class Obstacle {
         } else {
             this.offscreen = true
         }
-        if (this.x < window.innerWidth / 2 && !this.passed) {
+        if (this.x < this.game.width / 2 && !this.passed) {
             this.passed = true
             return 1
         }

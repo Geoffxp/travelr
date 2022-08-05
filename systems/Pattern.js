@@ -1,11 +1,12 @@
 export default class Pattern {
-    constructor(x1, y1) {
+    constructor(x1, y1, game) {
         this.rate = 6.265;
+        this.game = game;
         this.factor = 0.25;
         this.x1 = x1;
-        this.x2 = window.innerWidth + (this.x1 - window.innerWidth / 2) * this.factor;
+        this.x2 = game.width + (this.x1 - game.width / 2) * this.factor;
         this.y1 = y1;
-        this.y2 = window.innerHeight;
+        this.y2 = game.height;
         this.offScreen = false;
     }
     update() {
@@ -13,7 +14,7 @@ export default class Pattern {
             this.offScreen = true
         }
         this.x1 -= this.rate
-        this.x2 = this.x1 + (this.x1 - window.innerWidth / 2) * this.factor
+        this.x2 = this.x1 + (this.x1 - this.game.width / 2) * this.factor
     }
     draw(ctx) {
         ctx.fillStyle = "#000"
