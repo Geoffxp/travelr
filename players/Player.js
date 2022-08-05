@@ -12,6 +12,7 @@ function toRadians(degrees) {
 export default class Player {
     constructor(x, y, rotation, game) {
         this.size = 10;
+        this.game = game;
         this.x = x;
         this.y = y;
         this.center = {
@@ -59,6 +60,7 @@ export default class Player {
         this.spawned = true
     }
     update() {
+        this.floor = this.game.height * 0.85;
         if (this.jump) {
             this.velo = -10
             this.jump = false

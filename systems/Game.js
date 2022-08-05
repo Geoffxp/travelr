@@ -69,7 +69,7 @@ export default class Game {
         ctx.fillRect(0, this.height * 0.72, this.width, this.height)
         ctx.fillStyle = "pink"
         ctx.font = "50px monospace"
-        ctx.fillText(`SCORE: ${this.score}`, this.height * 0.05, this.width * 0.05)
+        ctx.fillText(`SCORE: ${this.score}`, this.height * 0.06, this.width * 0.06)
         this.patterns.forEach(pat => pat.draw(ctx))
         this.obstacles.forEach(ob => ob.draw(ctx))
         this.players.forEach(player => player.draw(ctx))
