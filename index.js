@@ -33,9 +33,20 @@ document.querySelector(".fullscreen").addEventListener("click", () => {
 })
 game.addPlayer(new Player(game.width / 3, game.height * 0.85,90, game))
 
+let now = Date.now();
+let then = Date.now();
+let elapsed = now - then;
+let frameRate = 1000 / 120;
+
 const gameloop = () => {
-    game.update(window.innerWidth, window.innerHeight, canvas)
-    game.draw(ctx)
+    now = Date.now();
+    elapsed = now - then;
+    if (elapsed >= frameRate) {
+        then = now
+        elapsed = 0
+        game.update(window.innerWidth, window.innerHeight, canvas)
+        game.draw(ctx)
+    }
     requestAnimationFrame(gameloop)
 }
 
