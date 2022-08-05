@@ -15,7 +15,6 @@ export default class Obstacle {
         const dx = Math.abs(this.center.x - this.ball.center.x)
         const dy = Math.abs(this.center.y - this.ball.center.y)
         const distance = Math.sqrt(dx**2 + dy**2)
-        console.log(dy, dx, this.center, this.ball.center)
         if (distance < 20) return true
         return false
     }
