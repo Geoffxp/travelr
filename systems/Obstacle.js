@@ -3,8 +3,8 @@ export default class Obstacle {
         this.shape = "triangle"
         this.size = 40
         this.x = window.innerWidth + 50
-        this.y = game.height * 0.86
-        this.rate = 10
+        this.y = game.height * 0.85 + (game.players[0].size)
+        this.rate = 7
         this.passed = false
         this.offscreen = false
         this.center = {x:0,y:0}

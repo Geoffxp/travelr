@@ -11,6 +11,17 @@ canvas.height = GAME_HEIGHT
 document.querySelector("#anchor").parentNode.replaceChild(canvas, document.querySelector("#anchor"))
 const ctx = canvas.getContext("2d")
 
+const getMobileOS = () => {
+    const ua = navigator.userAgent
+    if (/android/i.test(ua)) {
+      return "Android"
+    }
+    else if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+      return "iOS"
+    }
+    return "Other"
+}
+if (getMobileOS() == "iOS") document.querySelector(".fullscreen").style.display = "none"
 document.querySelector(".fullscreen").addEventListener("click", () => {
     if (canvas.requestFullscreen) {
         canvas.requestFullscreen();

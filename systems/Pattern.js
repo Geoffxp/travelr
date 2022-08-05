@@ -1,6 +1,6 @@
 export default class Pattern {
     constructor(x1, y1) {
-        this.rate = 8.95;
+        this.rate = 6.265;
         this.factor = 0.25;
         this.x1 = x1;
         this.x2 = window.innerWidth + (this.x1 - window.innerWidth / 2) * this.factor;
