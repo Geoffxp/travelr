@@ -14,7 +14,7 @@ const ctx = canvas.getContext("2d")
 game.addPlayer(new Player(game.width / 3, game.height * 0.85,90, game))
 
 const gameloop = () => {
-    game.update()
+    game.update(window.innerWidth, window.innerHeight, canvas)
     game.draw(ctx)
     requestAnimationFrame(gameloop)
 }

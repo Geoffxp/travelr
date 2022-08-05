@@ -12,6 +12,7 @@ export default class Game {
         this.obstacles = [];
         this.score = 0;
         this.patterns = [];
+        this.roadWidth = 2
     }
     start() {
         this.state = "PLAY";
@@ -20,12 +21,14 @@ export default class Game {
         this.obstacles = [];
         this.score = 0;
         this.patterns = [];
-        let divisions = window.innerWidth;
-        let divisor = window.innerWidth / 12;
-        while (divisions > 0) {
-            divisions -= divisor
-            this.patterns.push(new Pattern(divisions, this.height * 0.72))
+        this.patTimer = 0;
+    }
+    addPattern() {
+        if (this.patTimer <= 0) {
+            this.patterns.push(new Pattern(this.width, this.height * 0.72))
+            this.patTimer = this.roadWidth
         }
+        this.patterns.filter(pat => pat.offScreen === false)
     }
     addObstacle(game) {
         if (this.addTimer < 0) {
@@ -40,10 +43,16 @@ export default class Game {
     removePlayer(playerId) {
         this.players.filter(player => player.id != playerId)
     }
-    update() {
+    update(width, height, canvas) {
+        canvas.width = width
+        canvas.height = height
+        this.width = width
+        this.height = height
         if (this.state == "PLAY") {
             this.patterns.forEach(pat => pat.update())
             this.addTimer -= 0.1
+            this.patTimer -= 0.1
+            this.addPattern()
             this.addObstacle(this)
             this.obstacles.forEach(ob => this.score += ob.update())
             this.players.forEach(player => player.update());
@@ -60,7 +69,7 @@ export default class Game {
         ctx.fillRect(0, this.height * 0.72, this.width, this.height)
         ctx.fillStyle = "pink"
         ctx.font = "50px monospace"
-        ctx.fillText(`SCORE: ${this.score}`, 200, 300)
+        ctx.fillText(`SCORE: ${this.score}`, this.height * 0.05, this.width * 0.05)
         this.patterns.forEach(pat => pat.draw(ctx))
         this.obstacles.forEach(ob => ob.draw(ctx))
         this.players.forEach(player => player.draw(ctx))

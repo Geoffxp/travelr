@@ -20,5 +20,16 @@ export default class Input {
             if (key == "d") player.right = false
             if (key == "a") player.left = false
         })
+
+        document.addEventListener('touchstart', (e) => {
+            if (!player.airborne) {
+                player.halfG = true
+                player.jump = true
+                if (game.state == "MENU") game.start()
+            }
+        })
+        document.addEventListener('touchend', (e) => {
+            player.halfG = false
+        })
     }
 }

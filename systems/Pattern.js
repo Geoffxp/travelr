@@ -6,11 +6,11 @@ export default class Pattern {
         this.x2 = window.innerWidth + (this.x1 - window.innerWidth / 2) * this.factor;
         this.y1 = y1;
         this.y2 = window.innerHeight;
+        this.offScreen = false;
     }
     update() {
         if (this.x1 < 0) {
-            this.x1 = window.innerWidth
-            this.x2 = window.innerWidth + (this.x - window.innerWidth / 2) * this.factor
+            this.offScreen = true
         }
         this.x1 -= this.rate
         this.x2 = this.x1 + (this.x1 - window.innerWidth / 2) * this.factor
