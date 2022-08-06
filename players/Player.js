@@ -10,11 +10,13 @@ function toRadians(degrees) {
 }
 
 export default class Player {
-    constructor(x, y, rotation, game) {
+    constructor(x, y, rotation, game, id, opponent) {
+        this.id = id;
         this.size = 10;
         this.game = game;
         this.x = x;
         this.y = y;
+        this.lastY = y;
         this.center = {
             x: x + (this.size / 2),
             y:0
@@ -27,13 +29,13 @@ export default class Player {
         this.right = false;
         this.airborne = false;
         this.hangtime = 0;
-        this.color = "white";
+        this.color = opponent ? "rgba(255, 255, 255, 0.5)" : "white";
         this.velo = 0;
         this.spawned = false;
         this.g = 9.8;
         this.floor = game.height * 0.85;
         this.halfG = false;
-        new Input(this, game);
+        if (!opponent) new Input(this, game);
     }
     accelerate() {
         if (this.speed < this.maxSpeed) this.speed += 0.1
@@ -59,7 +61,7 @@ export default class Player {
     spawn() {
         this.spawned = true
     }
-    update() {
+    update(ws) {
         this.floor = this.game.height * 0.85;
         if (this.jump) {
             this.velo = -10
@@ -68,10 +70,14 @@ export default class Player {
         }
         this.gravity()
         this.y += this.velo
+        if (this.lastY != this.y) {
+            this.lastY = this.y
+            ws.send(JSON.stringify({currentY: this.y, score: this.game.score, playerId: this.id}))
+        }
         this.center.y = this.y + (this.size / 2)
     }
     draw(ctx) {
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.closePath();

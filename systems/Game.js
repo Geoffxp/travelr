@@ -3,21 +3,42 @@ import Obstacle from "./Obstacle.js";
 import Pattern from "./Pattern.js";
 
 export default class Game {
-    constructor(width, height) {
+    constructor(width, height, ws) {
         this.width = width;
         this.height = height;
         this.state = "MENU";
         this.addTimer = Math.random() * 5;
-        this.players = [];
+        this.player;
+        this.opponents = [];
         this.obstacles = [];
         this.score = 0;
         this.patterns = [];
-        this.roadWidth = 2
+        this.roadWidth = 2;
+        this.connections = 0;
+        this.scores = [];
+        this.ws = ws;
+        ws.addEventListener('message', ({ data }) => {
+            const parsedData = JSON.parse(data)
+            this.connections = parsedData.players.length
+            const scores = parsedData.players.map(p => parseInt(p.score))
+            this.scores = scores.sort()
+            const opponents = parsedData && parsedData.players ? parsedData.players.filter(p => p.playerId !== this.player.id) : []
+            opponents.forEach(p => {
+                if (!this.opponents.find(player => player.id === p.playerId)) {
+                    this.opponents.push(new Player(this.width / 3, p.currentY, 90, this, p.playerId, true))
+                }
+                this.opponents.forEach(player => {
+                    if (player.id === p.playerId) player.y = p.currentY
+                })
+            })
+        })
+
     }
     start() {
         this.state = "PLAY";
         this.addTimer = Math.random() * 5;
-        this.players = [new Player(this.width / 3,this.height * 0.85,90, this)];
+        this.player.x = this.width / 3
+        this.player.y = this.height * 0.85
         this.obstacles = [];
         this.score = 0;
         this.patterns = [];
@@ -38,7 +59,10 @@ export default class Game {
         this.obstacles = this.obstacles.filter(ob => ob.offscreen === false)
     }
     addPlayer(player) {
-        this.players.push(player)
+        this.player = player
+    }
+    addOpponent(player) {
+        this.opponents.push(player)
     }
     removePlayer(playerId) {
         this.players.filter(player => player.id != playerId)
@@ -55,7 +79,8 @@ export default class Game {
             this.addPattern()
             this.addObstacle(this)
             this.obstacles.forEach(ob => this.score += ob.update())
-            this.players.forEach(player => player.update());
+            this.player.update(this.ws)
+            this.opponents.forEach(o => o.update(this.ws))
         }
     }
     draw(ctx) {
@@ -69,9 +94,12 @@ export default class Game {
         ctx.fillRect(0, this.height * 0.72, this.width, this.height)
         ctx.fillStyle = "pink"
         ctx.font = "50px monospace"
-        ctx.fillText(`SCORE: ${this.score}`, this.height * 0.06, this.width * 0.06)
+        ctx.fillText(`SCORE: ${this.score}`, this.width * 0.06, this.height * 0.06)
+        ctx.fillText(`ACTIVE USERS: ${this.connections}`, this.width * 0.06, this.height * 0.06 + 52)
+        ctx.fillText(`TOP SCORE: ${this.scores[this.scores.length - 1]}`, this.width * 0.06, this.height * 0.06 + 104)
         this.patterns.forEach(pat => pat.draw(ctx))
         this.obstacles.forEach(ob => ob.draw(ctx))
-        this.players.forEach(player => player.draw(ctx))
+        this.player.draw(ctx)
+        this.opponents.forEach(o => o.draw(ctx))
     }
 }

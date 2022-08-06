@@ -3,7 +3,8 @@ import Game from "./systems/Game.js";
 
 const GAME_WIDTH = 1280
 const GAME_HEIGHT = 720
-const game = new Game(GAME_WIDTH, GAME_HEIGHT)
+const ws = new WebSocket("ws://secure-ravine-46870.herokuapp.com/")
+const game = new Game(GAME_WIDTH, GAME_HEIGHT, ws)
 
 const canvas = document.createElement("canvas")
 canvas.width = GAME_WIDTH
@@ -22,6 +23,7 @@ const getMobileOS = () => {
     return "Other"
 }
 if (getMobileOS() == "iOS") document.querySelector(".fullscreen").style.display = "none"
+
 document.querySelector(".fullscreen").addEventListener("click", () => {
     if (canvas.requestFullscreen) {
         canvas.requestFullscreen();
@@ -34,7 +36,8 @@ document.querySelector(".fullscreen").addEventListener("click", () => {
         screen.orientation.lock("portrait");
     }
 })
-game.addPlayer(new Player(game.width / 3, game.height * 0.85,90, game))
+const randomId = "Player " + String(Math.floor(Math.random() * 500))
+game.addPlayer(new Player(game.width / 3, game.height * 0.85,90, game, randomId))
 
 let now = Date.now();
 let then = Date.now();

@@ -3,13 +3,13 @@ export default class Obstacle {
         this.shape = "triangle"
         this.size = 40
         this.x = game.width + 50
-        this.y = game.height * 0.85 + (game.players[0].size)
+        this.y = game.height * 0.85 + (game.player.size)
         this.rate = 7
         this.passed = false
         this.offscreen = false
         this.center = {x:0,y:0}
         this.game = game
-        this.ball = game.players[0]
+        this.ball = game.player
     }
     calculateCollision() {
         const dx = Math.abs(this.center.x - this.ball.center.x)
@@ -31,7 +31,7 @@ export default class Obstacle {
         } else {
             this.offscreen = true
         }
-        if (this.x < this.game.width / 2 && !this.passed) {
+        if (this.x < this.game.width / 3 && !this.passed) {
             this.passed = true
             return 1
         }
