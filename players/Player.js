@@ -38,8 +38,8 @@ export default class Player {
         if (!opponent) new Input(this, game);
     }
     start() {
-        this.x = this.width / 3;
-        this.y = this.height * 0.85
+        this.x = this.game.width / 3;
+        this.y = this.game.height * 0.85
         this.speed = 0;
         this.maxSpeed = 5;
         this.halfG = false;
