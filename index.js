@@ -3,7 +3,7 @@ import Game from "./systems/Game.js";
 
 const GAME_WIDTH = 1280
 const GAME_HEIGHT = 720
-const ws = new WebSocket("ws://secure-ravine-46870.herokuapp.com/")
+const ws = new WebSocket("wss://secure-ravine-46870.herokuapp.com/")
 const game = new Game(GAME_WIDTH, GAME_HEIGHT, ws)
 
 const canvas = document.createElement("canvas")
