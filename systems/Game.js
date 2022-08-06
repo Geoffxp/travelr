@@ -13,23 +13,30 @@ export default class Game {
         this.opponents = [];
         this.obstacles = [];
         this.score = 0;
+        this.highScore = 0;
         this.patterns = [];
         this.roadWidth = 2;
         this.connections = 0;
-        this.scores = [];
+        this.scores = {};
         this.ws = ws;
         ws.addEventListener('message', ({ data }) => {
             const parsedData = JSON.parse(data)
-            this.connections = parsedData.players.length
-            const scores = parsedData.players.map(p => parseInt(p.score))
-            this.scores = scores.sort()
+            this.connections = parsedData && parsedData.players ? parsedData.players.length : 0
+            if (parsedData && parsedData.players) parsedData.players.forEach(player => this.scores[player.playerId] = player.score)
             const opponents = parsedData && parsedData.players ? parsedData.players.filter(p => p.playerId !== this.player.id) : []
             opponents.forEach(p => {
                 if (!this.opponents.find(player => player.id === p.playerId)) {
-                    this.opponents.push(new Player(this.width / 3, p.currentY, 90, this, p.playerId, true))
+                    this.opponents.push(new Player(this.width / 3, this.height * 0.85, 90, this, p.playerId, true))
                 }
                 this.opponents.forEach(player => {
-                    if (player.id === p.playerId) player.y = p.currentY
+                    if (player.id === p.playerId) {
+                        if (p.y) player.y = p.y
+                        player.hangtime = p.hangtime
+                        player.velo = p.velo
+                        player.jump = p.jump
+                        player.halfG = p.halfG
+                        player.airborne = p.airborne
+                    }
                 })
             })
         })
@@ -78,9 +85,10 @@ export default class Game {
             this.addPattern()
             this.addObstacle(this)
             this.obstacles.forEach(ob => this.score += ob.update())
-            this.player.update(this.ws)
-            this.opponents.forEach(o => o.update(this.ws))
         }
+        this.player.update()
+        this.opponents.forEach(o => o.update())
+        this.highScore = Math.max(...Object.values(this.scores))
     }
     draw(ctx) {
         ctx.clearRect(0, 0, this.width, this.height)
@@ -97,7 +105,7 @@ export default class Game {
         ctx.font = "50px monospace"
         ctx.fillText(`SCORE: ${this.score}`, this.width * 0.06, this.height * 0.06)
         ctx.fillText(`ACTIVE USERS: ${this.connections}`, this.width * 0.06, this.height * 0.06 + 52)
-        ctx.fillText(`TOP SCORE: ${this.scores[this.scores.length - 1]}`, this.width * 0.06, this.height * 0.06 + 104)
+        ctx.fillText(`TOP SCORE: ${this.highScore}`, this.width * 0.06, this.height * 0.06 + 104)
         this.patterns.forEach(pat => pat.draw(ctx))
         this.obstacles.forEach(ob => ob.draw(ctx))
         this.player.draw(ctx)

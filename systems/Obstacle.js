@@ -21,6 +21,7 @@ export default class Obstacle {
     update() {
         if (this.calculateCollision()) {
             this.game.state = "MENU"
+            this.game.player.start()
         }
         if (this.x > -10) {
             this.x -= this.rate

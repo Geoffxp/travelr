@@ -23,33 +23,36 @@ export default class Player {
         }
         this.rotation = rotation;
         this.moving = false;
-        this.speed = 0;
-        this.maxSpeed = 5;
         this.left = false;
         this.right = false;
         this.airborne = false;
         this.hangtime = 0;
         this.color = opponent ? "rgba(255, 255, 255, 0.5)" : "white";
         this.velo = 0;
-        this.spawned = false;
         this.g = 9.8;
         this.floor = game.height * 0.85;
         this.halfG = false;
+        this.opponent = opponent;
         if (!opponent) new Input(this, game);
     }
     start() {
         this.x = this.game.width / 3;
-        this.y = this.game.height * 0.85
-        this.speed = 0;
-        this.maxSpeed = 5;
+        this.y = this.floor;
         this.halfG = false;
         this.velo = 0;
-        this.spawned = false;
         this.airborne = false;
         this.hangtime = 0;
-    }
-    accelerate() {
-        if (this.speed < this.maxSpeed) this.speed += 0.1
+        this.jump = false;
+        this.game.ws.send(JSON.stringify({
+            y: this.floor,
+            jump: this.jump, 
+            score: this.game.score, 
+            playerId: this.id,
+            halfG: this.halfG,
+            airborne: this.airborne,
+            hangtime: this.hangtime,
+            velo: this.velo
+        }))
     }
     gravity() {
         const gravity = this.halfG ? this.g / 4 : this.g
@@ -65,26 +68,23 @@ export default class Player {
             }
         }
     }
-    turn() {
-        if (this.left) this.rotation -= 5
-        if (this.right) this.rotation += 5
-    }
-    spawn() {
-        this.spawned = true
-    }
-    update(ws) {
-        this.floor = this.game.height * 0.85;
+    update() {
         if (this.jump) {
             this.velo = -10
-            this.jump = false
             this.airborne = true
         }
+        this.game.ws.send(JSON.stringify({
+            jump: this.jump, 
+            score: this.game.score, 
+            playerId: this.id,
+            halfG: this.halfG,
+            airborne: this.airborne,
+            hangtime: this.hangtime,
+            velo: this.velo
+        }))
+        this.jump = false
         this.gravity()
         this.y += this.velo
-        if (this.lastY != this.y) {
-            this.lastY = this.y
-            ws.send(JSON.stringify({currentY: this.y, score: this.game.score, playerId: this.id}))
-        }
         this.center.y = this.y + (this.size / 2)
     }
     draw(ctx) {
