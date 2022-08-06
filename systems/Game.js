@@ -23,22 +23,22 @@ export default class Game {
             const parsedData = JSON.parse(data)
             this.connections = parsedData && parsedData.players ? parsedData.players.length : 0
             if (parsedData && parsedData.players) parsedData.players.forEach(player => this.scores[player.playerId] = player.score)
-            const opponents = parsedData && parsedData.players ? parsedData.players.filter(p => p.playerId !== this.player.id) : []
-            opponents.forEach(p => {
-                if (!this.opponents.find(player => player.id === p.playerId)) {
-                    this.opponents.push(new Player(this.width / 3, this.height * 0.85, 90, this, p.playerId, true))
-                }
-                this.opponents.forEach(player => {
-                    if (player.id === p.playerId) {
-                        if (p.y) player.y = p.y
-                        player.hangtime = p.hangtime
-                        player.velo = p.velo
-                        player.jump = p.jump
-                        player.halfG = p.halfG
-                        player.airborne = p.airborne
-                    }
-                })
-            })
+            // const opponents = parsedData && parsedData.players ? parsedData.players.filter(p => p.playerId !== this.player.id) : []
+            // opponents.forEach(p => {
+            //     if (!this.opponents.find(player => player.id === p.playerId)) {
+            //         this.opponents.push(new Player(this.width / 3, this.height * 0.65, 90, this, p.playerId, true))
+            //     }
+            //     this.opponents.forEach(player => {
+            //         if (player.id === p.playerId) {
+            //             if (p.y) player.y = p.y
+            //             player.hangtime = p.hangtime
+            //             player.velo = p.velo
+            //             player.jump = p.jump
+            //             player.halfG = p.halfG
+            //             player.airborne = p.airborne
+            //         }
+            //     })
+            // })
         })
 
     }
