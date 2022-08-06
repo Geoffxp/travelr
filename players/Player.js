@@ -37,6 +37,17 @@ export default class Player {
         this.halfG = false;
         if (!opponent) new Input(this, game);
     }
+    start() {
+        this.x = x;
+        this.y = this.height * 0.85
+        this.speed = 0;
+        this.maxSpeed = 5;
+        this.halfG = false;
+        this.velo = 0;
+        this.spawned = false;
+        this.airborne = false;
+        this.hangtime = 0;
+    }
     accelerate() {
         if (this.speed < this.maxSpeed) this.speed += 0.1
     }

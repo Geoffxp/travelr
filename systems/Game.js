@@ -36,9 +36,7 @@ export default class Game {
     }
     start() {
         this.state = "PLAY";
-        this.addTimer = Math.random() * 5;
-        this.player.x = this.width / 3
-        this.player.y = this.height * 0.85
+        this.player.start()
         this.obstacles = [];
         this.score = 0;
         this.patterns = [];
