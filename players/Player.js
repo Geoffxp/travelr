@@ -88,6 +88,24 @@ export default class Player {
         this.center.y = this.y + (this.size / 2)
     }
     draw(ctx) {
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        const grd = ctx.createRadialGradient(this.x,this.floor+10,5,this.x,this.floor+10,this.size+10);
+        grd.addColorStop(0, "rgba(0,0,0,0.5)")
+        grd.addColorStop(0.7, "rgba(0,0,0,0)")
+        ctx.fillStyle = grd
+        ctx.setTransform(new DOMMatrix([1,0,0,0.6,0,0]).translate(0,415,0))
+        ctx.beginPath();
+        ctx.ellipse(
+            this.x, 
+            this.floor + 10, 
+            this.size + ((this.floor - this.y) * 0.1), 
+            this.size - 5 + ((this.floor - this.y) * 0.03), 
+            0, 
+            0, 
+            2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+        ctx.setTransform(1,0,0,1,0,0)
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);

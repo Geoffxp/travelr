@@ -17,7 +17,10 @@ export default class Pattern {
         this.x2 = this.x1 + (this.x1 - this.game.width / 2) * this.factor
     }
     draw(ctx) {
-        ctx.fillStyle = "#000"
+        const grd = ctx.createRadialGradient(this.game.width / 3, this.game.height, 0, this.game.width / 3, this.game.height, 500)
+        grd.addColorStop(0, "rgb(200,200,200)")
+        grd.addColorStop(1, "black")
+        ctx.strokeStyle = grd
         ctx.lineWidth = 3
         ctx.beginPath()
         ctx.moveTo(this.x1, this.y1)

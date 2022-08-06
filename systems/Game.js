@@ -1,6 +1,7 @@
 import Player from "../players/Player.js";
 import Obstacle from "./Obstacle.js";
 import Pattern from "./Pattern.js";
+const bg = document.querySelector("#bg")
 
 export default class Game {
     constructor(width, height, ws) {
@@ -83,12 +84,14 @@ export default class Game {
     }
     draw(ctx) {
         ctx.clearRect(0, 0, this.width, this.height)
-        const grd = ctx.createLinearGradient(0, 0, this.width, this.height)
-        grd.addColorStop(0, "darkorange")
-        grd.addColorStop(1, "pink")
+        ctx.filter = "brightness(0.5) blur(2px)"
+        ctx.drawImage(bg, 0, 0, this.width, this.height)
+        ctx.filter = "none"
+        ctx.fillStyle = "rgba(50,180,235, 0.6)"
+        const grd = ctx.createLinearGradient(this.width / 2, this.height, this.width / 2, 0)
+        grd.addColorStop(0, "rgba(0,50,70,0.6)")
+        grd.addColorStop(0.3, "rgba(0,0,0,0.8)")
         ctx.fillStyle = grd
-        ctx.fillRect(0, 0, this.width, this.height)
-        ctx.fillStyle = "#00DDFF"
         ctx.fillRect(0, this.height * 0.72, this.width, this.height)
         ctx.fillStyle = "pink"
         ctx.font = "50px monospace"

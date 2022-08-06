@@ -5,8 +5,8 @@ export default class Input {
             if (key == " " && !player.airborne) {
                 player.halfG = true
                 player.jump = true
-                if (game.state == "MENU") game.start()
             }
+            if (game.state == "MENU") game.start()
             if (key == "w") player.jump = true
             if (key == "d") player.right = true
             if (key == "a") player.left = true
@@ -25,8 +25,8 @@ export default class Input {
             if (!player.airborne) {
                 player.halfG = true
                 player.jump = true
-                if (game.state == "MENU") game.start()
             }
+            if (game.state == "MENU") game.start()
         })
         document.addEventListener('touchend', (e) => {
             player.halfG = false

@@ -38,7 +38,7 @@ export default class Obstacle {
         return 0
     }
     draw(ctx) {
-        ctx.fillStyle = "purple"
+        ctx.fillStyle = "rgba(0,220,250,0.8)"
         ctx.beginPath()
         ctx.moveTo(this.x, this.y)
         ctx.lineTo(this.x - this.size, this.y)
