@@ -55,7 +55,7 @@ export default class Game {
             this.patterns.push(new Pattern(this.width, this.height * 0.72, this))
             this.patTimer = this.roadWidth
         }
-        this.patterns.filter(pat => pat.offScreen === false)
+        this.patterns = this.patterns.filter(pat => pat.offScreen === false)
     }
     addObstacle(game) {
         if (this.addTimer < 0) {
