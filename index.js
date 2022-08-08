@@ -7,8 +7,8 @@ const start = async () => {
     
     const GAME_WIDTH = 1280
     const GAME_HEIGHT = 720
-    // const ws = new WebSocket("wss://secure-ravine-46870.herokuapp.com/")
-    const ws = new WebSocket("ws://localhost:5000/")
+    const ws = new WebSocket("wss://secure-ravine-46870.herokuapp.com/")
+    // const ws = new WebSocket("ws://localhost:5000/")
     let game = {
         newState: null,
         oldState: null,
