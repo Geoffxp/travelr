@@ -12,12 +12,17 @@ const start = async () => {
     let game = {
         newState: null,
         oldState: null,
-        interpolatedFrames: 0
+        interpolatedFrames: 0,
+        running: false
     };
     let uid;
     ws.addEventListener('message', ({ data }) => {
         const parsedData = JSON.parse(data)
         if (parsedData.game) {
+            if (!game.running) {
+                game.running = true
+                gameloop()
+            }
             game.oldState = game.newState
             game.newState = parsedData.game
             game.interpolatedFrames = 0
@@ -84,7 +89,7 @@ const start = async () => {
         }
         requestAnimationFrame(gameloop)
     }
-    ws.onopen = () => requestAnimationFrame(gameloop())
+    //ws.onopen = () => 
 }
 const drawGame = (game, player, ctx) => {
     ctx.clearRect(0, 0, game.width, game.height)
