@@ -7,8 +7,8 @@ const start = async () => {
     
     const GAME_WIDTH = 1280
     const GAME_HEIGHT = 720
-    const ws = new WebSocket("wss://secure-ravine-46870.herokuapp.com/")
-    // const ws = new WebSocket("ws://localhost:5000/")
+    // const ws = new WebSocket("wss://secure-ravine-46870.herokuapp.com/")
+    const ws = new WebSocket("ws://localhost:5000/")
     let game = {
         newState: null,
         oldState: null,
@@ -16,7 +16,13 @@ const start = async () => {
         running: false
     };
     let uid;
+    let serverPrev = Date.now()
+    let serverNow = Date.now()
+    let serverDelta = serverNow - serverPrev
     ws.addEventListener('message', ({ data }) => {
+        serverNow = Date.now()
+        serverDelta = serverNow - serverPrev
+        serverPrev = Date.now()
         const parsedData = JSON.parse(data)
         if (parsedData.game) {
             if (!game.running) {
@@ -74,8 +80,8 @@ const start = async () => {
         if (elapsed >= frameRate) {
             then = now - (elapsed % frameRate)
             elapsed = 0
-            if (game.oldState && game.newState && game.interpolatedFrames < 7) {
-                interpolatedState = interpolateGame(game)
+            if (game.oldState && game.newState) {
+                interpolatedState = interpolateGame(game, elapsed - serverDelta)
                 drawGame(interpolatedState, player, ctx)
                 if (player) {
                     player.update(interpolatedState)
@@ -115,7 +121,7 @@ const drawGame = (game, player, ctx) => {
 const interpolateGame = (game) => {
     const { newState, oldState, interpolatedFrames } = game
     let renderedState = JSON.parse(JSON.stringify(oldState))
-    const percentage = interpolatedFrames / 6
+    const percentage = interpolatedFrames / 12
     if (newState.state == "PLAY") {
         renderedState.obTimer = oldState.obTimer + (newState.obTimer - oldState.obTimer) * percentage
         renderedState.patTimer = oldState.obTimer + (newState.obTimer - oldState.obTimer) * percentage
@@ -134,7 +140,7 @@ const interpolateGame = (game) => {
             percentage
         ))
     }
-    if (game.interpolatedFrames < 6) game.interpolatedFrames++
+    if (game.interpolatedFrames < 12) game.interpolatedFrames++
     return renderedState
 }
 const interpolateObstacle = (ob, game, n, o, p) => {
