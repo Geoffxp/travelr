@@ -10,7 +10,7 @@ function toRadians(degrees) {
 }
 
 export default class Player {
-    constructor(x, y, rotation, game, id, opponent) {
+    constructor(x, y, rotation, game, id, opponent, ws) {
         this.id = id;
         this.size = 10;
         this.game = game;
@@ -27,13 +27,16 @@ export default class Player {
         this.right = false;
         this.airborne = false;
         this.hangtime = 0;
-        this.color = opponent ? "rgba(255, 255, 255, 0.5)" : "white";
+        this.color = "rgba(255, 255, 255, 0.5)";
+        this.state = "READY";
         this.velo = 0;
         this.g = 9.8;
         this.floor = game.height * 0.85;
         this.halfG = false;
         this.opponent = opponent;
-        if (!opponent) new Input(this, game);
+        this.score = 0;
+        this.ws = ws;
+        if (!opponent) new Input(this, game, ws);
     }
     start() {
         this.x = this.game.width / 3;
@@ -43,16 +46,8 @@ export default class Player {
         this.airborne = false;
         this.hangtime = 0;
         this.jump = false;
-        this.game.ws.send(JSON.stringify({
-            y: this.floor,
-            jump: this.jump, 
-            score: this.game.score, 
-            playerId: this.id,
-            halfG: this.halfG,
-            airborne: this.airborne,
-            hangtime: this.hangtime,
-            velo: this.velo
-        }))
+        this.state = "ACTIVE";
+        this.color = "white";
     }
     gravity() {
         const gravity = this.halfG ? this.g / 4 : this.g
@@ -68,24 +63,33 @@ export default class Player {
             }
         }
     }
-    update() {
+    calculateCollision(game) {
+        Object.keys(game.obstacles).forEach(oid => {
+            const ob = game.obstacles[oid]
+            const dx = Math.abs(ob.center.x - this.center.x)
+            const dy = Math.abs(ob.center.y - this.center.y)
+            const distance = Math.sqrt(dx**2 + dy**2)
+            if (distance < 20 && this.state == "ACTIVE") {
+                this.ws.send(JSON.stringify({updatePlayer:{id: this.id, state: "DEAD"}}))
+                this.state = "DEAD";
+                this.color = "rgba(255,255,255,0.5";
+            }
+        })
+    }
+    update(game) {
+        this.calculateCollision(game)
         if (this.jump) {
             this.velo = -10
             this.airborne = true
         }
-        this.game.ws.send(JSON.stringify({
-            jump: this.jump, 
-            score: this.game.score, 
-            playerId: this.id,
-            halfG: this.halfG,
-            airborne: this.airborne,
-            hangtime: this.hangtime,
-            velo: this.velo
-        }))
         this.jump = false
         this.gravity()
         this.y += this.velo
         this.center.y = this.y + (this.size / 2)
+        const player = game.players.find(p => {
+            return p.id === this.id
+        })
+        this.score = player ? player.score : 0
     }
     draw(ctx) {
         ctx.fillStyle = "rgba(0,0,0,0.5)";
@@ -111,5 +115,12 @@ export default class Player {
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.closePath();
         ctx.fill();
+        if (this.state === "DEAD") {
+            ctx.fillStyle = "rgba(0,0,0,0.5)"
+            ctx.fillRect(0,0,this.game.width,this.game.height)
+            ctx.fillStyle = "pink"
+            ctx.font = "50px monospace"
+            ctx.fillText(`YOUR JOMP ${this.score} TRIANGLE`, this.game.width * 0.25, this.game.height * 0.50 - 25)
+        }
     }
 }
